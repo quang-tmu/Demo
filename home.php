@@ -10,9 +10,9 @@
 <h1>Hello</h1>
 
 <?php
-echo '<p style="text-align: center; color: green;">Xin chào TMU</p>';
-echo '<button style="background-color:red;">click</button>';
-echo '<a target="_blank" href ="https://www.youtube.com/">Youtube</a> '
+echo ucwords("N'Đ")
+
+
 ?>
     
 </body>
