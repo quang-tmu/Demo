@@ -10,7 +10,17 @@
 <h1>Hello</h1>
 
 <?php
-echo ucwords("N'Đ")
+class Person {
+    public $id;
+    
+    public function sayHello() {
+       echo "Hello, my id is " . $this->id;
+    }
+ }
+ 
+ $person = new Person();
+ $person->id = "2702";
+ $person->sayHello(); // Output: Hello, my na is John
 
 
 ?>

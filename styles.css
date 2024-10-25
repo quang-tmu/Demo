@@ -1,0 +1,45 @@
+/* Thiết lập font chữ và màu sắc chính */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Định dạng tiêu đề trang */
+header {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 1em 0;
+}
+
+h1 {
+    font-size: 2em;
+}
+
+/* Định dạng đoạn văn ngắn */
+section p {
+    font-size: 1.2em;
+    margin: 1em 0;
+    text-align: center;
+}
+
+/* Định dạng danh sách sở thích */
+ul {
+    list-style-type: square;
+    width: fit-content;
+}
+
+li {
+    margin: 0.5em 0;
+}
+
+/* Thêm kiểu cho đường viền */
+section {
+    border: 1px solid #ddd;
+    padding: 1em;
+    margin: 1em auto;
+    width: 80%;
+}

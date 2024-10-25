@@ -36,120 +36,70 @@
             </ol>
         </nav>
 
-        <div class="row row-cols-1 row-cols-md-2 g-4">
-            <?php
-            session_start();
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                session_start();
 
-            // Lấy thông tin kết nối từ session
-            if (isset($_SESSION['server']) && isset($_SESSION['database']) && isset($_SESSION['username']) && isset($_SESSION['password'])) {
-                $server = $_SESSION['server'];
-                $database = $_SESSION['database'];
-                $username = $_SESSION['username'];
-                $password = $_SESSION['password'];
+                // Lấy thông tin kết nối từ session
+                if (isset($_SESSION['server']) && isset($_SESSION['database']) && isset($_SESSION['username']) && isset($_SESSION['password'])) {
+                    $server = $_SESSION['server'];
+                    $database = $_SESSION['database'];
+                    $username = $_SESSION['username'];
+                    $password = $_SESSION['password'];
 
-                // Tạo kết nối tới database
-                $conn = new mysqli($server, $username, $password, $database);
+                    // Tạo kết nối tới database
+                    $conn = new mysqli($server, $username, $password, $database);
 
-                // Kiểm tra kết nối
-                if ($conn->connect_error) {
-                    die('Kết nối thất bại: ' . $conn->connect_error);
-                }
-
-                // Truy vấn lấy danh sách khóa học từ bảng Course
-                $sql = "SELECT * FROM course"; // Truy vấn bảng Course
-                $result = $conn->query($sql);
-
-                if ($result->num_rows > 0) {
-                    // Hiển thị các khóa học
-                    while ($row = $result->fetch_assoc()) {
-                        echo '<div class="col">
-                                <div class="card">
-                                    <img src="' . $row['ImageUrl'] . '" class="card-img-top" alt="' . $row['Title'] . '">
-                                    <div class="card-body">
-                                        <h5 class="card-title">' . $row['Title'] . '</h5>
-                                        <p class="card-text">' . $row['Description'] . '</p>
-                                    </div>
-                                </div>
-                            </div>';
+                    // Kiểm tra kết nối
+                    if ($conn->connect_error) {
+                        die('Kết nối thất bại: ' . $conn->connect_error);
                     }
-                } else {
-                    echo '<p>No courses found</p>';
-                }
 
-                $conn->close();
-            } else {
-                echo '<p>No database connection information available in session</p>';
-            }
-            ?>
-        </div>
+                    // Truy vấn lấy danh sách khóa học từ bảng Course
+                    $sql = "SELECT * FROM course"; // Truy vấn bảng Course
+                    $result = $conn->query($sql);
+
+                    if ($result->num_rows > 0) {
+                        // Hiển thị các khóa học
+                        while ($row = $result->fetch_assoc()) {
+                            echo '<tr>
+                                    <td><img src="' . $row['ImageUrl'] . '" alt="' . $row['Title'] . '" style="width: 100px;"></td>
+                                    <td>' . $row['Title'] . '</td>
+                                    <td>' . $row['Description'] . '</td>
+                                  </tr>';
+                        }
+                    } else {
+                        echo '<tr><td colspan="3">No courses found</td></tr>';
+                    }
+
+                    $conn->close();
+                } else {
+                    echo '<tr><td colspan="3">No database connection information available in session</td></tr>';
+                }
+                ?>
+            </tbody>
+        </table>
 
         <hr>
         <form class="row" method="POST" enctype="multipart/form-data">
             <div class="col">
                 <div class="form-floating mb-3">
-                    <input value="data" type="text" class="form-control" id="filename" placeholder="File name" name="filename">
-                    <label for="filename">File name</label>
+                    <input value="data" type="text" class="form-control" id="server" placeholder="File name" name="filename">
+                    <label for="data">File name</label>
                 </div>
                 <button type="submit" class="btn btn-primary" name="submit">Write file</button>
             </div>
             <div class="col">
             </div>
         </form>
-
-        <?php
-        // Xử lý ghi file
-        if (isset($_POST['submit'])) {
-            $filename = $_POST['filename'] . '.txt'; // Tạo tên file với đuôi .txt
-
-            // Lấy thông tin kết nối từ session
-            if (isset($_SESSION['server']) && isset($_SESSION['database']) && isset($_SESSION['username']) && isset($_SESSION['password'])) {
-                $server = $_SESSION['server'];
-                $database = $_SESSION['database'];
-                $username = $_SESSION['username'];
-                $password = $_SESSION['password'];
-
-                // Tạo kết nối tới database
-                $conn = new mysqli($server, $username, $password, $database);
-
-                // Kiểm tra kết nối
-                if ($conn->connect_error) {
-                    die('Kết nối thất bại: ' . $conn->connect_error);
-                }
-
-                // Truy vấn danh sách các khóa học để ghi vào file
-                $sql = "SELECT * FROM course";
-                $result = $conn->query($sql);
-
-                if ($result->num_rows > 0) {
-                    $content = "Danh sách các khóa học:\n";
-
-                    // Duyệt qua các bản ghi và thêm vào nội dung file
-                    while ($row = $result->fetch_assoc()) {
-                        $content .= "ID: " . $row['Id'] . "\n";
-                        $content .= "Title: " . $row['Title'] . "\n";
-                        $content .= "Description: " . $row['Description'] . "\n";
-                        $content .= "Image URL: " . $row['ImageUrl'] . "\n\n";
-                    }
-
-                    // Ghi nội dung vào file
-                    $file = fopen($filename, "w"); // Mở file với chế độ ghi đè
-                    if ($file) {
-                        fwrite($file, $content); // Ghi nội dung vào file
-                        fclose($file); // Đóng file
-                        echo '<p>File written successfully: ' . $filename . '</p>';
-                    } else {
-                        echo '<p>Failed to write file</p>';
-                    }
-                } else {
-                    echo '<p>No courses available to write</p>';
-                }
-
-                $conn->close();
-            } else {
-                echo '<p>No database connection information available in session</p>';
-            }
-        }
-        ?>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
